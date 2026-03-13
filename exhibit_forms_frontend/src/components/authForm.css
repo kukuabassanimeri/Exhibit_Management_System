@@ -1,0 +1,56 @@
+.login-bg {
+  background-image: url("/media/bg-img.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.auth-card {
+  width: 400px;
+  border-radius: 4px;
+}
+
+.logo {
+  width: 80px;
+  border-radius: 50%;
+}
+
+.exhibitMemo {
+  color: #8f0303;
+}
+
+.login {
+  background-color: #252a61;
+  color: #fff;
+}
+
+.login:hover {
+  background-color: #1b1f4a;
+  color: #fff;
+}
+
+.switch-btn {
+  color: #8f0303;
+  font-weight: 500;
+}
+
+.switch-btn:hover {
+  color: #600202;
+}
+
+.exhibitTable {
+  border: 1px solid #8f0303;
+}
+.exhibitTable th {
+  background-color: #252a61;
+  color: #fff;
+}
+
+.exhibitTable th,
+.exhibitTable td {
+  border: 1px solid #8f0303;
+}
+
+tbody {
+  border: 1px solid #8f0303;
+}

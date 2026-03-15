@@ -54,3 +54,49 @@
 tbody {
   border: 1px solid #8f0303;
 }
+
+/* Pagination container */
+.pagination-ui {
+  font-size: 14px;
+}
+
+/* Page numbers */
+.page-number {
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 2px;
+  transition: all 0.2s ease;
+  color: #333;
+}
+
+/* Hover effect */
+.page-number:hover {
+  background-color: #8F0303;
+  color: white;
+}
+
+/* Active page */
+.active-page {
+  background-color: #252a61;
+  color: white;
+  font-weight: 400;
+}
+
+/* Arrow icons */
+.page-arrow {
+  cursor: pointer;
+  font-size: 16px;
+  color: #252a61;
+  transition: 0.2s;
+}
+
+/* Arrow hover */
+.page-arrow:hover {
+  color: #8F0303;
+}
+
+/* Disabled arrow */
+.disabled-arrow {
+  opacity: 0.3;
+  pointer-events: none;
+}

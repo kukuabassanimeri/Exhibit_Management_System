@@ -11,6 +11,11 @@ const Dashboard = () => {
   const [exhibits, setExhibits] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  //* Pagination
+  const [count, setCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 3;
+
   //* Logout the examiner
   const handleLogOut = async () => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -31,27 +36,64 @@ const Dashboard = () => {
   };
 
   //* Fetch exhibits from API
-  useEffect(() => {
-    const fetchExhibits = async () => {
-      try {
-        const storedUser = JSON.parse(localStorage.getItem("user"));
-        const response = await fetch("http://127.0.0.1:8000/api/exhibits", {
+  const fetchExhibits = async (page = 1) => {
+    try {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/exhibits?page=${page}`,
+        {
           headers: {
             Authorization: `Token ${storedUser.token}`,
           },
-        });
+        },
+      );
 
-        const data = await response.json();
-        setExhibits(data.results || []); //* Extract results array
-      } catch (error) {
-        console.error("Failed to fetch exhibits:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      const data = await response.json();
 
-    fetchExhibits();
+      setExhibits(data.results);
+      setCount(data.count);
+      setCurrentPage(page);
+    } catch (error) {
+      console.error("Failed to fetch exhibits:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchExhibits(1);
   }, []);
+
+  //* Calculate total Pages
+  const totalPages = Math.ceil(count / pageSize);
+
+  const getVisiblePages = () => {
+    const pages = [];
+
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+
+      if (currentPage > 3) pages.push("...");
+
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+
+      if (currentPage < totalPages - 2) pages.push("...");
+
+      pages.push(totalPages);
+    }
+
+    return pages;
+  };
+
+  const visiblePages = getVisiblePages();
 
   return (
     <div className="d-flex flex-column min-vh-100 bg-light">
@@ -106,6 +148,8 @@ const Dashboard = () => {
             <h4 className="fw-semibold mb-0">All Exhibits</h4>
           </div>
 
+          {/* Search Exhibit by serial_number & date_received */}
+          
           <button
             className="btn px-2 text-white"
             style={{ backgroundColor: "#8F0303" }}
@@ -206,6 +250,45 @@ const Dashboard = () => {
             </table>
           </div>
         )}
+
+        <div className="d-flex justify-content-center align-items-center gap-3 mt-4">
+          {/* Previous */}
+          <i
+            className={`fa-solid fa-chevron-left page-arrow ${
+              currentPage === 1 ? "disabled-arrow" : ""
+            }`}
+            onClick={() => currentPage > 1 && fetchExhibits(currentPage - 1)}
+          ></i>
+
+          {/* Page Numbers */}
+          {visiblePages.map((page, index) =>
+            page === "..." ? (
+              <span key={index} className="px-1">
+                ...
+              </span>
+            ) : (
+              <span
+                key={index}
+                className={`page-number ${
+                  currentPage === page ? "active-page" : ""
+                }`}
+                onClick={() => fetchExhibits(page)}
+              >
+                {page}
+              </span>
+            ),
+          )}
+
+          {/* Next */}
+          <i
+            className={`fa-solid fa-chevron-right page-arrow ${
+              currentPage === totalPages ? "disabled-arrow" : ""
+            }`}
+            onClick={() =>
+              currentPage < totalPages && fetchExhibits(currentPage + 1)
+            }
+          ></i>
+        </div>
       </div>
 
       {/* Footer */}

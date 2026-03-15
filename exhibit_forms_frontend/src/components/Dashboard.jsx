@@ -2,6 +2,11 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "./UserContext";
 import { useNavigate } from "react-router-dom";
 import "./authForm.css";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
+import ExhibitHeader from "./ExhibitHeader";
+import ExhibitTable from "./ExhibitTable";
+import Pagination from "./Pagination";
 
 const Dashboard = () => {
   const { user, setUser } = useContext(UserContext);
@@ -15,6 +20,9 @@ const Dashboard = () => {
   const [count, setCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 3;
+
+  //* Search Exhibit State
+  const [searchExhibit, setSearchExhibit] = useState("");
 
   //* Logout the examiner
   const handleLogOut = async () => {
@@ -41,7 +49,7 @@ const Dashboard = () => {
       const storedUser = JSON.parse(localStorage.getItem("user"));
 
       const response = await fetch(
-        `http://127.0.0.1:8000/api/exhibits?page=${page}`,
+        `http://127.0.0.1:8000/api/exhibits?page=${page}&search=${searchExhibit}`,
         {
           headers: {
             Authorization: `Token ${storedUser.token}`,
@@ -59,6 +67,12 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  //* Search Exhibit Function
+  const handleSearch = () => {
+    setCurrentPage(1);
+    fetchExhibits(1);
   };
 
   useEffect(() => {
@@ -98,214 +112,31 @@ const Dashboard = () => {
   return (
     <div className="d-flex flex-column min-vh-100 bg-light">
       {/* Navbar */}
-      <nav
-        className="navbar navbar-expand-lg px-3 shadow-sm"
-        style={{
-          backgroundColor: "#8F0303",
-          borderBottomStyle: "solid",
-          borderBottomColor: "#252a61",
-          borderBottomWidth: "1px",
-        }}
-      >
-        {/* System Title */}
-        <div className="navbar-brand text-white fw-bold">
-          Digital Forensic Lab
-          <span className="ms-2 fw-semibold text-black">
-            Exhibit Management
-          </span>
-        </div>
-
-        {/* Right side */}
-        <div className="ms-auto">
-          {/* User Dropdown */}
-          <div className="dropdown">
-            <button
-              className="btn btn-light dropdown-toggle"
-              data-bs-toggle="dropdown"
-            >
-              👤 {user?.first_name} {user?.last_name}
-            </button>
-
-            <ul className="dropdown-menu dropdown-menu-end shadow">
-              <li>
-                <button
-                  className="dropdown-item text-danger"
-                  onClick={handleLogOut}
-                >
-                  Logout
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+      <Navbar user={user} handleLogOut={handleLogOut} />
 
       {/* Dashboard Body */}
       <div className="container-fluid py-4 flex-grow-1">
         {/* Page Header */}
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <div>
-            <h4 className="fw-semibold mb-0">All Exhibits</h4>
-          </div>
-
-          {/* Search Exhibit by serial_number & date_received */}
-          
-          <button
-            className="btn px-2 text-white"
-            style={{ backgroundColor: "#8F0303" }}
-          >
-            Add Exhibit
-          </button>
-        </div>
+        <ExhibitHeader
+          searchExhibit={searchExhibit}
+          setSearchExhibit={setSearchExhibit}
+          handleSearch={handleSearch}
+        />
 
         {/* Exhibits Table */}
-        {loading ? (
-          <p>Loading exhibits...</p>
-        ) : exhibits.length === 0 ? (
-          <div className="card shadow-sm border-0">
-            <div className="card-body text-center py-2">
-              <p className="text-muted mb-0">No exhibits found.</p>
-            </div>
-          </div>
-        ) : (
-          <div className="table-responsive">
-            <table className="table table-bordered shadow-sm text-start">
-              <thead className="exhibitTable">
-                <tr>
-                  <th>Copy</th>
-                  <th>S/No</th>
-                  <th>Date</th>
-                  <th>Examiner</th>
-                  <th>Investigator</th>
-                  <th>Description</th>
-                  <th>Station</th>
-                  <th>Suspect</th>
-                  <th>Status</th>
-                  <th>Signature</th>
-                </tr>
-              </thead>
-              <tbody>
-                {exhibits.map((exhibit) => (
-                  <tr key={exhibit.serial_number}>
-                    <td>
-                      {exhibit.exhibit_copy ? (
-                        <img
-                          src={exhibit.exhibit_copy}
-                          alt={exhibit.serial_number}
-                          style={{
-                            width: "60px",
-                            height: "auto",
-                            cursor: "pointer",
-                          }}
-                          onClick={() =>
-                            window.open(exhibit.exhibit_copy, "_blank")
-                          }
-                        />
-                      ) : (
-                        "No Image"
-                      )}
-                    </td>
-                    <td>{exhibit.serial_number}</td>
-                    <td>{exhibit.date_received}</td>
-                    <td>{exhibit.examiner}</td>
-                    <td>{exhibit.investigator}</td>
-                    <td>
-                      <ol className="mb-0">
-                        {exhibit.description.split(/\r\n/).map((item, idx) => (
-                          <li key={idx}>{item}</li>
-                        ))}
-                      </ol>
-                    </td>
-                    <td>{exhibit.station}</td>
-                    <td>{exhibit.suspect}</td>
-                    <td>
-                      <span
-                        style={{
-                          padding: "4px 4px",
-                          borderRadius: "5px",
-                          color: "white",
-                          backgroundColor:
-                            exhibit.status === "Pending"
-                              ? "gray"
-                              : exhibit.status === "Extracted"
-                                ? "#007bff"
-                                : exhibit.status === "Analyzed"
-                                  ? "orange"
-                                  : exhibit.status === "Reported"
-                                    ? "green"
-                                    : exhibit.status === "Failed"
-                                      ? "#8F0303"
-                                      : exhibit.status === "Collected"
-                                        ? "#005200"
-                                        : "black",
-                        }}
-                      >
-                        {exhibit.status}
-                      </span>
-                    </td>
-                    <td>{exhibit.signature}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <ExhibitTable exhibits={exhibits} loading={loading} />
 
-        <div className="d-flex justify-content-center align-items-center gap-3 mt-4">
-          {/* Previous */}
-          <i
-            className={`fa-solid fa-chevron-left page-arrow ${
-              currentPage === 1 ? "disabled-arrow" : ""
-            }`}
-            onClick={() => currentPage > 1 && fetchExhibits(currentPage - 1)}
-          ></i>
-
-          {/* Page Numbers */}
-          {visiblePages.map((page, index) =>
-            page === "..." ? (
-              <span key={index} className="px-1">
-                ...
-              </span>
-            ) : (
-              <span
-                key={index}
-                className={`page-number ${
-                  currentPage === page ? "active-page" : ""
-                }`}
-                onClick={() => fetchExhibits(page)}
-              >
-                {page}
-              </span>
-            ),
-          )}
-
-          {/* Next */}
-          <i
-            className={`fa-solid fa-chevron-right page-arrow ${
-              currentPage === totalPages ? "disabled-arrow" : ""
-            }`}
-            onClick={() =>
-              currentPage < totalPages && fetchExhibits(currentPage + 1)
-            }
-          ></i>
-        </div>
+        {/* Pagination */}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          visiblePages={visiblePages}
+          fetchExhibits={fetchExhibits}
+        />
       </div>
 
       {/* Footer */}
-      <footer
-        className="px-3 py-2 text-center text-white"
-        style={{
-          backgroundColor: "#8F0303",
-          borderTopStyle: "solid",
-          borderTopColor: "#252a61",
-          borderTopWidth: "1px",
-        }}
-      >
-        <small>
-          © {new Date().getFullYear()} Digital Forensic Lab | Exhibit Management
-          System
-        </small>
-      </footer>
+      <Footer />
     </div>
   );
 };

@@ -68,7 +68,7 @@ const ExhibitTable = ({ exhibits, loading }) => {
 
               <td>
                 <ol className="mb-0">
-                  {exhibit.description.split(/\r\n/).map((item, idx) => (
+                  {exhibit.description?.split(/\r\n/).map((item, idx) => (
                     <li key={idx}>{item}</li>
                   ))}
                 </ol>
@@ -78,7 +78,7 @@ const ExhibitTable = ({ exhibits, loading }) => {
 
               <td>
                 <ol className="mb-0">
-                  {exhibit.suspect.split(/\r\n/).map((item, idx) => (
+                  {exhibit.suspect?.split(/\r\n/).map((item, idx) => (
                     <li key={idx}>{item}</li>
                   ))}
                 </ol>

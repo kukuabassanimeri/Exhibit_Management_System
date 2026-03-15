@@ -1,5 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+
 import "./index.css";
 import App from "./App.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -11,6 +12,7 @@ import AuthForm from "./components/AuthForm.jsx";
 import GuestRoute from "./components/GuestRoute.jsx";
 import Dashboard from "./components/Dashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import AddExhibit from "./components/AddExhibit.jsx";
 
 //* Router Configuration
 const router = createBrowserRouter([
@@ -30,6 +32,17 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+
+      //* ADD EXHIBIT
+      {
+        path: "dashboard/exhibits/add",
+        element: (
+          <ProtectedRoute>
+            <AddExhibit />
+          </ProtectedRoute>
+        ),
+      },
+
       {
         path: "auth",
         element: (

@@ -24,6 +24,7 @@ const Dashboard = () => {
   //* Search Exhibit State
   const [searchExhibit, setSearchExhibit] = useState("");
 
+
   //* Logout the examiner
   const handleLogOut = async () => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -76,8 +77,8 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    fetchExhibits(1);
-  }, []);
+    fetchExhibits(currentPage);
+  }, [currentPage]);
 
   //* Calculate total Pages
   const totalPages = Math.ceil(count / pageSize);

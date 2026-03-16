@@ -24,7 +24,6 @@ const Dashboard = () => {
   //* Search Exhibit State
   const [searchExhibit, setSearchExhibit] = useState("");
 
-
   //* Logout the examiner
   const handleLogOut = async () => {
     const storedUser = JSON.parse(localStorage.getItem("user"));

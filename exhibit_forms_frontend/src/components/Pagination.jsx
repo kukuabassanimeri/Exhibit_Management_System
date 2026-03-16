@@ -6,7 +6,6 @@ const Pagination = ({
 }) => {
   return (
     <div className="d-flex justify-content-center align-items-center gap-3 mt-4">
-      
       {/* Previous */}
       <i
         className={`fa-solid fa-chevron-left page-arrow ${
@@ -31,7 +30,7 @@ const Pagination = ({
           >
             {page}
           </span>
-        )
+        ),
       )}
 
       {/* Next */}

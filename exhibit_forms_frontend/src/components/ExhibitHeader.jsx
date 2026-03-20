@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
-const ExhibitHeader = ({ searchExhibit, setSearchExhibit, handleSearch }) => {
+const ExhibitHeader = ({ searchExhibit, setSearchExhibit, handleSearch, totalExhibits }) => {
   const navigate = useNavigate();
   return (
     <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
       {/* Title */}
-      <h4 className="fw-semibold mb-0">All Exhibits</h4>
+      <h4 className="fw-semibold mb-0">All Exhibits: <span style={{ color: "#8F0303"}}>{totalExhibits}</span></h4>
 
       {/* Search Section */}
       <div className="d-flex align-items-center gap-2">

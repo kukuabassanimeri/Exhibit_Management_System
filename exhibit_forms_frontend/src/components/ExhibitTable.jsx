@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 //* Exhibit Status Color Codes
 const statusColors = {
   Pending: "gray",
@@ -9,6 +11,8 @@ const statusColors = {
 };
 
 const ExhibitTable = ({ exhibits, loading }) => {
+  //* Navigate Route
+  const navigate = useNavigate();
   if (loading) {
     return <p>Loading exhibits...</p>;
   }
@@ -37,7 +41,6 @@ const ExhibitTable = ({ exhibits, loading }) => {
             <th>Station</th>
             <th>Suspect</th>
             <th>Status</th>
-            <th>Signature</th>
           </tr>
         </thead>
 
@@ -61,7 +64,16 @@ const ExhibitTable = ({ exhibits, loading }) => {
                 )}
               </td>
 
-              <td>{exhibit.serial_number}</td>
+              <td
+                style={{
+                  cursor: "pointer",
+                  color: "#252a61",
+                  fontWeight: "500",
+                }}
+                onClick={() => navigate(`/dashboard/exhibits/${exhibit.serial_number}`)}
+              >
+                {exhibit.serial_number}
+              </td>
               <td>{exhibit.date_received}</td>
               <td>{exhibit.examiner}</td>
               <td>{exhibit.investigator}</td>
@@ -97,7 +109,6 @@ const ExhibitTable = ({ exhibits, loading }) => {
                 </span>
               </td>
 
-              <td>{exhibit.signature}</td>
             </tr>
           ))}
         </tbody>

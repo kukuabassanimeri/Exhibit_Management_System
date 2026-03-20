@@ -121,6 +121,7 @@ const Dashboard = () => {
           searchExhibit={searchExhibit}
           setSearchExhibit={setSearchExhibit}
           handleSearch={handleSearch}
+          totalExhibits={count}
         />
 
         {/* Exhibits Table */}

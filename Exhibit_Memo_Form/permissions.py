@@ -10,3 +10,8 @@ class IsOwnerOrSuperuser(BasePermission):
         
         # EXAMINER CAN ACCESS EXHIBIT RELATED TO HIM OR HER
         return obj.examiner == request.user
+    
+# ONLY SUPERUSER TO PERFORM DELETING THE EXHIBIT
+class IsSuperUserOnly(BasePermission):
+    def has_permission(self, request, view):
+        return request.user and request.user.is_superuser

@@ -44,15 +44,21 @@ class ExhibitCollectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExhibitCollectionModel
         
-        fields = ['exhibit_number', 'date_collected', 'collected_by', 'signature']
+        fields = ['exhibit_number', 'date_collected', 'collected_by']
 
     def get_exhibit_number(self, obj):
         return obj.exhibit.serial_number
 
 # EXHIBIT SERIALIZER
-class ExhibitSerializer(serializers.ModelSerializer):
+class ExhibitSerializer(serializers.HyperlinkedModelSerializer): #
     
     examiner = serializers.CharField(source='examiner.get_full_name', read_only=True)
+    
+    # EXHIBIT DETAILED URL
+    detailed_url = serializers.HyperlinkedIdentityField(
+        view_name = 'Exhibit_Memo_Form:exhibit',
+        lookup_field = 'serial_number'
+    )
     
     # NESTED SERIALIZERS
     remarks = ExhibitRemarkSerializer(many=True, read_only=True)
@@ -63,6 +69,7 @@ class ExhibitSerializer(serializers.ModelSerializer):
         model = ExhibitModel
         
         fields = [
+            'detailed_url',
             'exhibit_copy',
             'serial_number', 
             'date_received', 
@@ -72,7 +79,10 @@ class ExhibitSerializer(serializers.ModelSerializer):
             'station', 
             'suspect', 
             'status',
-            'signature',
             'remarks',
             'collections'
         ]
+    def validate_serial_number(self, value):
+        if ExhibitModel.objects.filter(serial_number=value).exists():
+            raise serializers.ValidationError("Exhibit with this serial number already exists.")
+        return value

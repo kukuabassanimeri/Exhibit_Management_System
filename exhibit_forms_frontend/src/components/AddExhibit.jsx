@@ -12,7 +12,6 @@ const AddExhibit = () => {
     station: "",
     suspect: "",
     status: "Pending",
-    signature: "",
   });
 
   const [exhibitCopy, setExhibitCopy] = useState(null);
@@ -69,7 +68,6 @@ const AddExhibit = () => {
         station: "",
         suspect: "",
         status: "Pending",
-        signature: "",
       });
       setExhibitCopy(null);
     } catch (err) {
@@ -206,31 +204,17 @@ const AddExhibit = () => {
                   </select>
                 </div>
 
-                {/* Signature */}
-                <div className="mb-2">
-                  <label className="form-label">Signature</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="signature"
-                    placeholder="Signature"
-                    value={exhibitData.signature}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-
                 {/* Buttons */}
                 <div className="d-flex justify-content-between">
                   <button type="submit" className="btn btn-outline-dark">
-                    Add Exhibit
+                    Add
                   </button>
                   <button
                     type="button"
-                    className="btn btn-outline-secondary"
+                    className="btn btn-outline-dark"
                     onClick={() => navigate("/dashboard")}
                   >
-                    Back to Dashboard
+                    Back
                   </button>
                 </div>
               </form>

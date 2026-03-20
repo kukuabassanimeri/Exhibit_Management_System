@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
-from .permissions import IsOwnerOrSuperuser
+from .permissions import IsOwnerOrSuperuser,  IsSuperUserOnly
 from django.http import Http404
 from rest_framework.exceptions import NotFound
 from .pagination import ExhibitPagination
@@ -118,7 +118,7 @@ class ExhibitCreateListAPIView(generics.ListCreateAPIView):
 # RETRIEVE, UPDATE AND DESTROY EXHIBIT MEMO
 class ExhibitRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ExhibitSerializer
-    lookup_field = 'serial_number'
+    lookup_field = 'serial_number' # HELP IN RETRIEVING SINGLE EXHIBIT MEMO.
     permission_classes = [IsAuthenticated, IsOwnerOrSuperuser]
     
     # OVERRIDE WHO CAN SEE CAN RETRIEVE, UPDATE AND DESTROY WHICH EXHIBIT
@@ -146,6 +146,12 @@ class ExhibitRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
             return super().get_object()
         except Http404:
             raise NotFound('No exhibit record found with the provided serial number')
+    
+    # ONLY SUPERUSER TO DELETE EXHIBIT
+    def get_permissions(self):
+        if self.request.method == 'DELETE':
+            return [IsSuperUserOnly()]
+        return [IsAuthenticated()]
 
 # CREATE EXHIBIT MEMO REMARKS
 class ExhibitRemarkCreateAPIView(generics.CreateAPIView):

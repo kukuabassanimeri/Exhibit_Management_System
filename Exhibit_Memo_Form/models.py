@@ -25,7 +25,6 @@ class ExhibitModel(models.Model):
         default=ExhibitStatus.PENDING,
         max_length=20
     )
-    signature = models.CharField(max_length=20, default='')
     
     def __str__(self):
         return f'Exhibit {self.serial_number}'
@@ -49,7 +48,6 @@ class ExhibitCollectionModel(models.Model):
     exhibit = models.ForeignKey(ExhibitModel, on_delete=models.CASCADE, related_name='collections')
     date_collected = models.DateField()
     collected_by = models.CharField(max_length=20)
-    signature = models.CharField(max_length=20)
     
     def save(self, *args, **kwargs):
         

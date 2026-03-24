@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import ExhibitModel, ExhibitRemarksModel, ExhibitCollectionModel
+import re
 
 # USER REGISTRATION
 class ExaminerRegistrationSerializer(serializers.ModelSerializer):
@@ -21,6 +22,25 @@ class ExaminerRegistrationSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user # RETURN THE CREATED USER
+    
+    # VALIDATE PASSWORD STRENGTH
+    def validate_password(self, value):
+        if len(value) < 8:
+            raise serializers.ValidationError("Password must be at least 8 characters.")
+
+        if not re.search(r"[A-Z]", value):
+            raise serializers.ValidationError("Must include an uppercase letter.")
+
+        if not re.search(r"[a-z]", value):
+            raise serializers.ValidationError("Must include a lowercase letter.")
+
+        if not re.search(r"[0-9]", value):
+            raise serializers.ValidationError("Must include a number.")
+
+        if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", value):
+            raise serializers.ValidationError("Must include a special character.")
+
+        return value
 
 # EXHIBIT REMARKS SERIALIZER
 class ExhibitRemarkSerializer(serializers.ModelSerializer):
@@ -50,15 +70,11 @@ class ExhibitCollectionSerializer(serializers.ModelSerializer):
         return obj.exhibit.serial_number
 
 # EXHIBIT SERIALIZER
-class ExhibitSerializer(serializers.HyperlinkedModelSerializer): #
+class ExhibitSerializer(serializers.ModelSerializer): 
     
     examiner = serializers.CharField(source='examiner.get_full_name', read_only=True)
     
-    # EXHIBIT DETAILED URL
-    detailed_url = serializers.HyperlinkedIdentityField(
-        view_name = 'Exhibit_Memo_Form:exhibit',
-        lookup_field = 'serial_number'
-    )
+    detail_url = serializers.SerializerMethodField()
     
     # NESTED SERIALIZERS
     remarks = ExhibitRemarkSerializer(many=True, read_only=True)
@@ -69,7 +85,7 @@ class ExhibitSerializer(serializers.HyperlinkedModelSerializer): #
         model = ExhibitModel
         
         fields = [
-            'detailed_url',
+            'detail_url',
             'exhibit_copy',
             'serial_number', 
             'date_received', 
@@ -82,7 +98,15 @@ class ExhibitSerializer(serializers.HyperlinkedModelSerializer): #
             'remarks',
             'collections'
         ]
+    def get_detail_url(self, obj):
+        request = self.context.get('request')
+        return request.build_absolute_uri(f'/api/exhibits/{obj.serial_number}') if request else f'/api/exhibits/{obj.serial_number}'
+    
+    # Validate serial_number format
     def validate_serial_number(self, value):
-        if ExhibitModel.objects.filter(serial_number=value).exists():
-            raise serializers.ValidationError("Exhibit with this serial number already exists.")
+        pattern = r'^\d+_\d{4}$'
+        if not re.match(pattern, value):
+            raise serializers.ValidationError(
+                "Serial number must be in a such 100_2026 format"
+            )
         return value

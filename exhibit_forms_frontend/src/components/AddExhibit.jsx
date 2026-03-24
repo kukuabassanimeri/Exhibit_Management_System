@@ -49,8 +49,18 @@ const AddExhibit = () => {
       });
 
       const data = await response.json();
+
+      const extractError = (data) => {
+        if (data.detail) return data.detail;
+
+        return Object.values(data).flat().join(" ");
+      };
+      
       if (!response.ok) {
-        setError(JSON.stringify(data));
+        setError(extractError(data));
+        setTimeout(() => {
+          setError(null);
+        }, 3000);
         return;
       }
       setSuccess("Exhibit added successfully");
@@ -59,7 +69,6 @@ const AddExhibit = () => {
       setTimeout(() => {
         navigate("/dashboard", { replace: true });
       }, 2000);
-
       setExhibitData({
         serial_number: "",
         date_received: "",

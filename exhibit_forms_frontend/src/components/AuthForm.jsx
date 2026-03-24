@@ -64,9 +64,15 @@ const AuthForm = () => {
     //* Accept the JSON Data
     const data = await response.json();
 
+    const extractError = (data) => {
+      if (data.detail) return data.detail;
+
+      return Object.values(data).flat().join(" ");
+    };
+
     //* Show Success Message
     if (response.ok) {
-      setSuccess("Registration Successful. Please Login");
+      setSuccess("Registration Successful");
       setError(null);
 
       //* Clear Registration Fields
@@ -84,7 +90,7 @@ const AuthForm = () => {
         setSuccess(null);
       }, 2000);
     } else {
-      setError(data?.error || "Registration Failed. Please Check Credentials");
+      setError(extractError(data));
       setSuccess(null);
 
       //* Remove error after 3 seconds
@@ -118,8 +124,6 @@ const AuthForm = () => {
 
       //* Remove Error Message
       setError(null);
-
-      setSuccess(`Welcome ${data.first_name} ${data.last_name}`);
 
       //* Navigate to dashboard
       navigate("/dashboard", { replace: true });

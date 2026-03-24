@@ -63,7 +63,7 @@ const Dashboard = () => {
       setCount(data.count);
       setCurrentPage(page);
     } catch (error) {
-      console.error("Failed to fetch exhibits:", error);
+      throw new Error("Failed to fetch exhibits:", error);
     } finally {
       setLoading(false);
     }

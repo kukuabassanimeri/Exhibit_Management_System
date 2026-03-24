@@ -5,6 +5,7 @@ import DeleteExhibit from "./DeleteExhibit";
 const ExhibitInfo = ({ exhibitDetail }) => {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -21,12 +22,18 @@ const ExhibitInfo = ({ exhibitDetail }) => {
         },
       });
 
-      if (!response.ok) {
+      if (response.ok) {
+        setSuccess("Exhibit Deleted Successfully");
+        setError(null);
+
+        setTimeout(() => {
+          setShowDeleteModal(false);
+          navigate("/dashboard");
+          setSuccess(false);
+        }, 2000);
+      } else {
         throw new Error("Deleting exhibit failed");
       }
-
-      setShowDeleteModal(false);
-      navigate("/dashboard");
     } catch (err) {
       setError("Failed to delete exhibit");
     }
@@ -116,6 +123,8 @@ const ExhibitInfo = ({ exhibitDetail }) => {
         showDeleteModal={showDeleteModal}
         deleteExhibit={deleteExhibit}
         setShowDeleteModal={setShowDeleteModal}
+        success={success}
+        error={error}
       />
 
       {error && <p className="text-danger mt-2">{error}</p>}

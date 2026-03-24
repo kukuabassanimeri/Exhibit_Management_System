@@ -1,4 +1,10 @@
-const DeleteExhibit = ({ showDeleteModal, deleteExhibit, setShowDeleteModal}) => {
+const DeleteExhibit = ({
+  showDeleteModal,
+  deleteExhibit,
+  setShowDeleteModal,
+  success,
+  error,
+}) => {
   return (
     <div>
       {showDeleteModal && (
@@ -18,13 +24,20 @@ const DeleteExhibit = ({ showDeleteModal, deleteExhibit, setShowDeleteModal}) =>
               </div>
 
               <div className="modal-body">
-                Are you sure you want to delete this exhibit?
+                {success && (
+                  <div className="alert alert-success">{success}</div>
+                )}
+                {error && <div className="alert alert-danger">{error}</div>}
+                {!success && (
+                  <p>Are you sure you want to delete this exhibit?</p>
+                )}
               </div>
 
               <div className="modal-footer">
                 <button
                   className="btn btn-danger w-100"
                   onClick={deleteExhibit}
+                  disabled={success}
                 >
                   Delete
                 </button>

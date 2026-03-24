@@ -4,6 +4,8 @@ import RecordExhibitRemark from "./RecordExhibitRemark";
 const ExhibitRemarks = ({ exhibitDetail }) => {
   const [showRemarkModal, setShowRemarkModal] = useState(false);
 
+  //* State to update remarks automatically
+  const [remarks, setRemarks] = useState(exhibitDetail.remarks || [])
   return (
     <div className="col-md-4">
       <div className="card shadow-sm h-100 hover-card">
@@ -21,10 +23,10 @@ const ExhibitRemarks = ({ exhibitDetail }) => {
         </div>
 
         <div className="card-body">
-          {!exhibitDetail.remarks || exhibitDetail.remarks.length === 0 ? (
+          {remarks.length === 0 ? (
             <p className="text-muted">No remarks recorded.</p>
           ) : (
-            [...exhibitDetail.remarks].reverse().map((remark, index) => (
+            [...remarks].reverse().map((remark, index) => (
               <div
                 key={`${remark.created_at}-${index}`}
                 className="border-bottom pb-2 mb-2"
@@ -47,6 +49,7 @@ const ExhibitRemarks = ({ exhibitDetail }) => {
         showRemarkModal={showRemarkModal}
         setShowRemarkModal={setShowRemarkModal}
         serial_number={exhibitDetail.serial_number}
+        setRemarks={setRemarks}
       />
     </div>
   );

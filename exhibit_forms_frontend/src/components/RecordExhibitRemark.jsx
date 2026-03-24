@@ -4,6 +4,7 @@ const RecordExhibitRemark = ({
   serial_number,
   showRemarkModal,
   setShowRemarkModal,
+  setRemarks,
 }) => {
   const [exhibitRemark, setExhibitRemark] = useState({
     remarks: "",
@@ -44,6 +45,9 @@ const RecordExhibitRemark = ({
         return;
       }
 
+      //* Update Remarks UI
+      setRemarks((prev) => [...prev, data]);
+
       setSuccess("Remark added successfully");
       setError(null);
 
@@ -57,7 +61,7 @@ const RecordExhibitRemark = ({
       setTimeout(() => {
         setShowRemarkModal(false);
         setSuccess(null);
-      }, 1000);
+      }, 2000);
     } catch (err) {
       setError("Could not record remark");
     }

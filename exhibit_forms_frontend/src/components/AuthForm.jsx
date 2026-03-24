@@ -156,7 +156,7 @@ const AuthForm = () => {
         {/* Logo */}
         <div className="text-center mb-3">
           <img
-            src="/media/DCI-logo.jpg"
+            src="src/assets/DCI-logo.jpg"
             alt="logo"
             className="logo"
             role="button"

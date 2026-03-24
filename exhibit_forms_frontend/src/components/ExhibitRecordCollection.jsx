@@ -4,6 +4,7 @@ const ExhibitRecordCollection = ({
   serial_number,
   showCollectionModal,
   setShowCollectionModal,
+  setCollect,
 }) => {
   const [exhibitRecordCollection, setExhibitRecordCollection] = useState({
     collected_by: "",
@@ -42,11 +43,25 @@ const ExhibitRecordCollection = ({
 
       const data = await response.json();
 
+      //* Retrieve errors from the backend
+      const extractError = (data) => {
+        if (data.detail) return data.detail;
+
+        return Object.values(data).flat().join(" ");
+      };
+
       if (!response.ok) {
-        setError(JSON.stringify(data) || "Failed to collect exhibit");
-        
+        setError(extractError(data));
+        setTimeout(() => {
+          setError(null);
+          setShowCollectionModal(false);
+        }, 2000);
         return;
+
       }
+      //* Update exhibit collection UI automatically.
+      setCollect((prev) => [...prev, data]);
+
       setSuccess("Exhibit Collected Successfully");
       setError(null);
 
@@ -60,7 +75,7 @@ const ExhibitRecordCollection = ({
       setTimeout(() => {
         setShowCollectionModal(false);
         setSuccess(null);
-      }, 1000);
+      }, 2000);
     } catch (err) {
       setError("Could not Collect Exhibit");
     }

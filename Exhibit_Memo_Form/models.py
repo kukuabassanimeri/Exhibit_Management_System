@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from rest_framework.exceptions import ValidationError
 
 # DEFINE GLOBAL EXHIBIT MEMO STATUS
 class ExhibitStatus(models.TextChoices):
@@ -53,11 +54,11 @@ class ExhibitCollectionModel(models.Model):
         
         # BLOCK EXHIBIT COLLECTION IF ALREADY COLLECTED
         if self.exhibit.status == ExhibitStatus.COLLECTED:
-            raise ValueError('This exhibit has been already collected')
+            raise ValidationError('This exhibit has been already collected')
         
         # RESTRICT EXHIBIT COLLECTION TILL REPORT IS GENERATED OR EXTRACTION FAILED
         if self.exhibit.status not in [ExhibitStatus.REPORTED, ExhibitStatus.FAILED]:
-            raise ValueError('Exhibit cannot be collected until report is generated or extraction failed')
+            raise ValidationError('Exhibit cannot be collected until report is generated or extraction failed')
 
         self.exhibit.status = ExhibitStatus.COLLECTED
         self.exhibit.save()

@@ -18,6 +18,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Prefetch
 from django.contrib import messages
 from django.shortcuts import redirect
+from rest_framework.exceptions import ValidationError
 # SEARCH FILTER
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -151,8 +152,8 @@ class ExhibitRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
     def get_permissions(self):
         if self.request.method == 'DELETE':
             return [IsSuperUserOnly()]
-        return [IsAuthenticated()]
-
+        return [IsAuthenticated(), IsOwnerOrSuperuser()]
+    
 # CREATE EXHIBIT MEMO REMARKS
 class ExhibitRemarkCreateAPIView(generics.CreateAPIView):
     serializer_class = ExhibitRemarkSerializer

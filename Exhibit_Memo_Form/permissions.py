@@ -13,5 +13,6 @@ class IsOwnerOrSuperuser(BasePermission):
     
 # ONLY SUPERUSER TO PERFORM DELETING THE EXHIBIT
 class IsSuperUserOnly(BasePermission):
+    message = 'Only Super Admin Can Delete Exhibit'
     def has_permission(self, request, view):
         return request.user and request.user.is_superuser

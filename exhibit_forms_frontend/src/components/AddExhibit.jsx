@@ -55,7 +55,7 @@ const AddExhibit = () => {
 
         return Object.values(data).flat().join(" ");
       };
-      
+
       if (!response.ok) {
         setError(extractError(data));
         setTimeout(() => {
@@ -184,11 +184,11 @@ const AddExhibit = () => {
                 {/* Suspect */}
                 <div className="mb-2">
                   <label className="form-label">Suspect</label>
-                  <input
-                    type="text"
+                  <textarea
                     className="form-control"
                     name="suspect"
                     placeholder="Suspect"
+                    rows={3}
                     value={exhibitData.suspect}
                     onChange={handleChange}
                     required

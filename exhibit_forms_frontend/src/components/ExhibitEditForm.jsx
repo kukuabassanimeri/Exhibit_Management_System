@@ -102,9 +102,9 @@ const ExhibitEditForm = ({
                 {/* Suspect */}
                 <div className="mb-2">
                   <label className="form-label">Suspect</label>
-                  <input
-                    type="text"
+                  <textarea
                     name="suspect"
+                    rows={3}
                     value={exhibitData.suspect}
                     onChange={handleChange}
                     className="form-control"

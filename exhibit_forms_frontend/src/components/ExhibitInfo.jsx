@@ -22,20 +22,39 @@ const ExhibitInfo = ({ exhibitDetail }) => {
         },
       });
 
-      if (response.ok) {
-        setSuccess("Exhibit Deleted Successfully");
-        setError(null);
+      let data = {};
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
+      //* Retrieve errors from the backend
+      const extractError = (data) => {
+        if (data.detail) return data.detail;
+
+        return Object.values(data).flat().join(" ");
+      };
+
+      if (!response.ok) {
+        setError(extractError(data));
+        setSuccess(null);
 
         setTimeout(() => {
           setShowDeleteModal(false);
-          navigate("/dashboard");
-          setSuccess(false);
+          setError(null);
         }, 2000);
-      } else {
-        throw new Error("Deleting exhibit failed");
+        return;
       }
+
+      //* Success Message
+      setSuccess("Exhibit Deleted Successfully");
+      setTimeout(() => {
+        setShowDeleteModal(false);
+        navigate("/dashboard");
+      }, 2000);
     } catch (err) {
       setError("Failed to delete exhibit");
+      setSuccess(null);
     }
   };
   return (
@@ -49,7 +68,11 @@ const ExhibitInfo = ({ exhibitDetail }) => {
           <div>
             <button
               className="btn btn-sm btn-light me-2"
-              onClick={() => navigate(`/dashboard/exhibits/${exhibitDetail.serial_number}/edit`)}
+              onClick={() =>
+                navigate(
+                  `/dashboard/exhibits/${exhibitDetail.serial_number}/edit`,
+                )
+              }
             >
               Edit
             </button>

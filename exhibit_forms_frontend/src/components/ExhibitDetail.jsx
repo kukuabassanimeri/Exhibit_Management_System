@@ -70,7 +70,6 @@ const ExhibitDetail = () => {
         {/* Collection History */}
         <ExhibitCollection exhibitDetail={exhibitDetail} />
       </div>
-
     </div>
   );
 };

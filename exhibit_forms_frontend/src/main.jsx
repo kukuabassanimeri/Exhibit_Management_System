@@ -14,6 +14,7 @@ import Dashboard from "./components/Dashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import AddExhibit from "./components/AddExhibit.jsx";
 import ExhibitDetail from "./components/ExhibitDetail.jsx";
+import ExhibitEdit from "./components/ExhibitEdit.jsx";
 
 //* Router Configuration
 const router = createBrowserRouter([
@@ -50,6 +51,16 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <ExhibitDetail />
+          </ProtectedRoute>
+        ),
+      },
+
+      //* EXHIBIT EDIT
+      {
+        path: "dashboard/exhibits/:serial_number/edit",
+        element: (
+          <ProtectedRoute>
+            <ExhibitEdit />
           </ProtectedRoute>
         ),
       },

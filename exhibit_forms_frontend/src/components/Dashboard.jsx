@@ -85,7 +85,7 @@ const Dashboard = () => {
   const getVisiblePages = () => {
     const pages = [];
 
-    if (totalPages <= 7) {
+    if (totalPages <= 10) {
       for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
       pages.push(1);

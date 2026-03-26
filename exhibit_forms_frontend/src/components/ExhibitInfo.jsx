@@ -47,7 +47,12 @@ const ExhibitInfo = ({ exhibitDetail }) => {
         >
           Exhibit Information
           <div>
-            <button className="btn btn-sm btn-light me-2">Edit</button>
+            <button
+              className="btn btn-sm btn-light me-2"
+              onClick={() => navigate(`/dashboard/exhibits/${exhibitDetail.serial_number}/edit`)}
+            >
+              Edit
+            </button>
 
             <button
               className="btn btn-sm btn-danger"

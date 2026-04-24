@@ -39,20 +39,20 @@
 }
 
 .exhibitTable {
-  border: 1px solid #8f0303;
+  border: 1px solid #1b1f4a;
 }
 .exhibitTable th {
-  background-color: #252a61;
+  background-color: #8f0303;
   color: #fff;
 }
 
 .exhibitTable th,
 .exhibitTable td {
-  border: 1px solid #8f0303;
+  border: 1px solid #1b1f4a;
 }
 
 tbody {
-  border: 1px solid #8f0303;
+  border: 1px solid #1b1f4a;
 }
 
 /* Pagination container */
@@ -109,3 +109,65 @@ tbody {
   transform: translateY(-4px);
   box-shadow: 0 6px 18px rgba(0,0,0,0.15);
 }
+
+.sidebar {
+  width: 240px;
+  min-height: 100vh;
+  background-color: #252a61; 
+}
+
+.sidebar-link {
+  color: white;
+  text-decoration: none;
+  padding: 12px 10px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.submenu {
+  margin-left: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-sublink {
+  color: white;
+  text-decoration: none;
+  padding: 8px 10px;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+/* Dashboard */
+.dashboard-card {
+  flex: 1;
+  min-width: 220px;
+  background: white;
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: 0.2s ease;
+  cursor: pointer;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Text */
+.card-content p {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.card-content h2 {
+  margin: 5px 0 0;
+  font-weight: 700;
+}
+

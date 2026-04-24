@@ -84,10 +84,15 @@ class ExhibitCreateListAPIView(generics.ListCreateAPIView):
         Prefetch('collections', queryset=collection_queryset)
     )
         
-        if user.is_superuser or user.is_staff: 
-            return queryset # RETURN ALL EXHIBITS IF SUPERUSER OR STAFF
+        if not (user.is_superuser or user.is_staff):
+            queryset = queryset.filter(examiner=user)
         
-        return queryset.filter(examiner=user).order_by('-date_received') # RETURN EXHIBIT OF SPECIFIC EXAMINER
+        status_param = self.request.query_params.get('status')
+        if status_param:
+            statuses = status_param.split(',')
+            queryset = queryset.filter(status__in=statuses)
+
+        return queryset.order_by('-date_received')
     
     # OVERRIDE PERFORM CREATE
     def perform_create(self, serializer):

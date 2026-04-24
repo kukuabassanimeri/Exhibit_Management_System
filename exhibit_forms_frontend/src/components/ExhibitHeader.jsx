@@ -1,42 +1,45 @@
-import { useNavigate } from "react-router-dom";
-const ExhibitHeader = ({ searchExhibit, setSearchExhibit, handleSearch, totalExhibits }) => {
-  const navigate = useNavigate();
+const ExhibitHeader = ({
+  totalExhibits,
+  pendingCount,
+  setStatusFilter,
+  exploitedCount,
+}) => {
   return (
-    <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-      {/* Title */}
-      <h4 className="fw-semibold mb-0">All Exhibits: <span style={{ color: "#8F0303"}}>{totalExhibits}</span></h4>
-
-      {/* Search Section */}
-      <div className="d-flex align-items-center gap-2">
-        {/* Serial Number Search */}
-        <input
-          type="text"
-          placeholder="Search Exhibit Serial Number"
-          className="form-control"
-          style={{ width: "300px" }}
-          value={searchExhibit}
-          onChange={(e) => setSearchExhibit(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleSearch();
-            }
-          }}
-        />
-
-        {/* Search Button */}
-        <button className="btn btn-dark" onClick={handleSearch}>
-          <i className="fa-solid fa-magnifying-glass"></i>
-        </button>
+    <div className="d-flex gap-4 flex-wrap mb-4">
+      {/* ALL CASES */}
+      <div className="dashboard-card" onClick={() => setStatusFilter("")}>
+        <div className="card-content">
+          <p>ALL CASES</p>
+          <h2>{totalExhibits}</h2>
+        </div>
+        <div className="card-icon bg-primary"></div>
       </div>
 
-      {/* Add Exhibit */}
-      <button
-        className="btn text-white"
-        style={{ backgroundColor: "#8F0303" }}
-        onClick={() => navigate("/dashboard/exhibits/add")}
+      {/* PENDING */}
+      <div
+        className="dashboard-card"
+        onClick={() => setStatusFilter("Pending")}
       >
-        Add Exhibit
-      </button>
+        <div className="card-content">
+          <p>PENDING</p>
+          <h2>{pendingCount}</h2>
+        </div>
+        <div className="bg-warning"></div>
+      </div>
+
+      {/* EXPLOITED */}
+      <div
+        className="dashboard-card"
+        onClick={() =>
+          setStatusFilter("Extracted,Analyzed,Reported,Failed,Collected")
+        }
+      >
+        <div className="card-content">
+          <p>EXPLOITED</p>
+          <h2>{exploitedCount}</h2>
+        </div>
+        <div className="card-icon bg-success"></div>
+      </div>
     </div>
   );
 };

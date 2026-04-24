@@ -7,6 +7,8 @@ import Footer from "./Footer";
 import ExhibitHeader from "./ExhibitHeader";
 import ExhibitTable from "./ExhibitTable";
 import Pagination from "./Pagination";
+import SideBar from "./SideBar";
+import ExhibitSearch from "./ExhibitSearch";
 
 const Dashboard = () => {
   const { user, setUser } = useContext(UserContext);
@@ -20,6 +22,12 @@ const Dashboard = () => {
   const [count, setCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 3;
+
+  //* Pending cases
+  const [statusFilter, setStatusFilter] = useState("");
+
+  //* All exhibits
+  const [totalCases, setTotalCases] = useState(0);
 
   //* Search Exhibit State
   const [searchExhibit, setSearchExhibit] = useState("");
@@ -49,7 +57,7 @@ const Dashboard = () => {
       const storedUser = JSON.parse(localStorage.getItem("user"));
 
       const response = await fetch(
-        `http://127.0.0.1:8000/api/exhibits?page=${page}&search=${searchExhibit}`,
+        `http://127.0.0.1:8000/api/exhibits?page=${page}&search=${searchExhibit}&status=${statusFilter}`,
         {
           headers: {
             Authorization: `Token ${storedUser.token}`,
@@ -76,8 +84,73 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    fetchExhibits(currentPage);
-  }, [currentPage]);
+    setCurrentPage(1);
+    fetchExhibits(1);
+  }, [statusFilter, searchExhibit]);
+
+  //* Fetch Pending cases
+  const [pendingCount, setPendingCount] = useState(0);
+
+  const fetchPendingCount = async () => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    const res = await fetch(
+      `http://127.0.0.1:8000/api/exhibits?status=Pending`,
+      {
+        headers: {
+          Authorization: `Token ${storedUser.token}`,
+        },
+      },
+    );
+
+    const data = await res.json();
+    setPendingCount(data.count);
+  };
+
+  useEffect(() => {
+    fetchPendingCount();
+  }, []);
+
+  //* Fetch exploited exhibits (status = "Extracted, Analyzed, Reported, Failed, Collected")
+  const [exploitedCount, setExploitedCount] = useState(0);
+
+  const fetchExploitedCount = async () => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    const res = await fetch(
+      `http://127.0.0.1:8000/api/exhibits?status=Extracted,Analyzed,Reported,Failed,Collected`,
+      {
+        headers: {
+          Authorization: `Token ${storedUser.token}`,
+        },
+      },
+    );
+
+    const data = await res.json();
+    setExploitedCount(data.count);
+  };
+
+  useEffect(() => {
+    fetchExploitedCount();
+  }, []);
+
+  //* Fetch all exhibits
+  const fetchTotalCases = async () => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    const res = await fetch(`http://127.0.0.1:8000/api/exhibits`, {
+      headers: {
+        Authorization: `Token ${storedUser.token}`,
+      },
+    });
+
+    const data = await res.json();
+    setTotalCases(data.count);
+  };
+
+  useEffect(() => {
+    fetchTotalCases();
+  }, []);
 
   //* Calculate total Pages
   const totalPages = Math.ceil(count / pageSize);
@@ -110,34 +183,42 @@ const Dashboard = () => {
   const visiblePages = getVisiblePages();
 
   return (
-    <div className="d-flex flex-column min-vh-100 bg-light">
-      {/* Navbar */}
-      <Navbar user={user} handleLogOut={handleLogOut} />
+    <div className="d-flex">
+      {/* Sidebar */}
+      <SideBar setStatusFilter={setStatusFilter} />
 
-      {/* Dashboard Body */}
-      <div className="container-fluid py-4 flex-grow-1">
-        {/* Page Header */}
-        <ExhibitHeader
-          searchExhibit={searchExhibit}
-          setSearchExhibit={setSearchExhibit}
-          handleSearch={handleSearch}
-          totalExhibits={count}
-        />
+      {/* Main Content */}
+      <div className="flex-grow-1 d-flex flex-column min-vh-100 bg-light">
+        <Navbar user={user} handleLogOut={handleLogOut} />
 
-        {/* Exhibits Table */}
-        <ExhibitTable exhibits={exhibits} loading={loading} />
+        <div className="container-fluid py-4 flex-grow-1">
+          <ExhibitHeader
+            searchExhibit={searchExhibit}
+            setSearchExhibit={setSearchExhibit}
+            handleSearch={handleSearch}
+            totalExhibits={totalCases}
+            pendingCount={pendingCount}
+            setStatusFilter={setStatusFilter}
+            exploitedCount={exploitedCount}
+          />
 
-        {/* Pagination */}
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          visiblePages={visiblePages}
-          fetchExhibits={fetchExhibits}
-        />
+          <ExhibitSearch
+            searchExhibit={searchExhibit}
+            setSearchExhibit={setSearchExhibit}
+            handleSearch={handleSearch}
+          />
+          <ExhibitTable exhibits={exhibits} loading={loading} />
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            visiblePages={visiblePages}
+            fetchExhibits={fetchExhibits}
+          />
+        </div>
+
+        <Footer />
       </div>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 };

@@ -246,7 +246,8 @@ const AuthForm = () => {
           </button>
         </form>
 
-        <p className="text-center mt-3">
+        {/* Hide the examiner registeration button */}
+        {/* <p className="text-center mt-3">
           {isLogin ? "Don't have an account?" : "Already have an account?"}
 
           <button
@@ -255,7 +256,7 @@ const AuthForm = () => {
           >
             {isLogin ? "Sign Up" : "Login"}
           </button>
-        </p>
+        </p> */}
       </div>
     </div>
   );

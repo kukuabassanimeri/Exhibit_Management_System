@@ -9,14 +9,6 @@ const Navbar = ({ user, handleLogOut }) => {
         borderBottomWidth: "1px",
       }}
     >
-      {/* System Title */}
-      <div className="navbar-brand text-white fw-bold">
-        Digital Forensic Lab
-        <span className="ms-2 fw-semibold text-black">
-          Exhibit Management
-        </span>
-      </div>
-
       {/* Right side */}
       <div className="ms-auto">
         <div className="dropdown">
